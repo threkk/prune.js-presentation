@@ -84,6 +84,7 @@ layout: statement
 
 > ## Small glue language easy to use by designers and part-time programmers to assemble components like images
 ## Curly-bracket syntax, dynamic, prototye based, first class functions
+## Chaotic development
 ## Multiparadigm
 
 <style>
@@ -94,61 +95,17 @@ blockquote { padding: 1.5em; }
 - Like C, Java
 - Dynamic types and everything in general.
 - There have been implementations server side. Netscape introduced an implementation of the language into Netscape Enterprise server (1995) and Microsoft supported JSCript in ASP an .NET (1996). In 2009 Nodejs was released using the JavaScript engine V8 of Google Chrome browser.
-- It is also used in databases (MongoDB, DynamoDB), videogames (UnityScript), operative systems (JavaScript for Autommation, WinJS) and phone programming (React Native, Cordova, KaiOS).
+- It is also used in databases (MongoDB, DynamoDB), videogames (UnityScript, ActionScript), operative systems (JavaScript for Autommation, WinJS) and phone programming (React Native, Cordova, KaiOS).
 -->
----
-layout: quote
----
-# History of JavaScript: first versions
-- **1995:** Created by Brendan Eich as part of the version 2.0 of Netscape.
-- **1996:** Netscape submitted the JavaScript specification to the _European Computer Manufacturers Associations_ (ECMA).
-- **1997:** Release of ECMAScript version 1.
-- **1998:** ECMAScript version 2.
-- **1999:** ECMAScript version 3.
 
-<style>
-ul { padding-top: 2.5em; li { font-size: 1.5em; } }
-strong { background-color: teal; }
-</style>
-
-<!--
-- Brendan Eich will become CEO of Mozilla and Brave
-- Submitted with the intention that other browsers could implement the JavaScript language
-- Only run on Netscape, but Microsoft reverse engineered its own scripting technologies for the browser Internet Explorer, named VBScript and JScript.
-- Originally, Microsoft had no intention of implementing JavaScript on Internet Explorer.
-- This was a big problem for developers trying to support all the browsers.
-- _Best viwed in..._
--->
----
-layout: quote
----
-# History of JavaScript: the drama
-- **2003:** ECMAScript 4 started to be developed, with participants very divided.
-- **2008:** Both sides meet in Oslo and reach an agreement. ECMAScript 4 was never completed, but a subset of it was released as ECMAScript 3.1
-- **2009:** ECMAScript 5 gets released. Common base for JavaScript.
-- **2010:** ECMAScript 5.1 gets released to align with _ISO/IEC 16262_.
-- **2015:** ECMAScript 6. Most improvements ever released.
-
-<style>
-ul { padding-top: 2.5em; li { font-size: 1.5em; } }
-strong { background-color: teal; }
-</style>
-
-<!--
-- There were two sides:  Adobe, Mozilla and Macromedia vs Microsoft, Yahoo and Google.
-- Issues about how ambitious the changes should be and the possible backwards compatibility issues.
-- They agreed on collaborating in the development of ECMAScript 5.
-- ISO specification for JavaScript.
-- Since then, one new version every year:  v7 (2016), v8 (2017)...
--->
 ---
 layout: image-left
 image: /js-trinity.png
 ---
 # JavaScript as a language
 ## Loosely typed
-- 7 different types: `String`, `Number`, `Boolean`, `Object`, `Symbol`,`null`,
-    `undefined`.
+- 7 different types: `String`, `Number`, `Boolean`, `Symbol`,`null`,
+    `undefined` and `Object`.
 - Everything else which is not in the list _inherits_ from `Object`.
 - Automatic conversion between types.
 
@@ -157,8 +114,8 @@ image: /js-trinity.png
 ```js{all|1|2|3,4}
 1 + "1" // "11"
 1 - "1" // 0
-!+[] // true
-!+[]+![] // 1
+!0+[] // true
+!0+[]+![] // 1
 ```
 <!--
 - Everything but object are primitives
@@ -194,7 +151,7 @@ graph LR
 
 <br />
 
-Heavy usage of callbacks, anonymous functions, function composition...
+Heavy usage of callbacks, anonymous functions, function composition, scope binding...
 
 <br />
 
@@ -219,15 +176,6 @@ layout: default
 ---
 ## Dynamic
 
-<br />
-
-- Very much asynchronous and event oriented language.
-- The execution order is altered by the usage of the callbacks, hoisting and
-    events.
-
-- Properties can change during runtime.
-- Non-existing properties in objects will be created during runtime.
-
 <logos-twitter />
 
 > **[Jake Archibald](https://twitter.com/jaffathecake/status/1427915254848270337)**
@@ -251,9 +199,14 @@ console.log(a); // "foo"
 }
 console.log(a); // function a();
 ```
-
 <!--
+- Very much asynchronous and event oriented language.
+- The execution order is altered by the usage of the callbacks, hoisting and
+    events.
+
 - Jake Archibald, developer advoce working on Chrome.
+- Properties can change during runtime.
+- Non-existing properties in objects will be created during runtime.
 - Now we have syntactic sugar like promises and async/await to abstract the
     callback hell.
 - We are not getting into chaging the scope of execution using bind/call
@@ -293,10 +246,9 @@ ul { list-style: none; }
 ---
 layout: two-cols
 ---
-
 # Call graph construction
 ## Existing solutions
-_Estree: Esprima/Acorn/Espree_
+
 ### From academy
 - TAJS
 - SAFE
@@ -327,6 +279,7 @@ Hybrid of a call-graph and a flow graph.
 3. Link `read-write`, `call-return`, `arguments-parameters`, `import-export`
 
 <!--
+- _Estree: Esprima/Acorn/Espree_
 - ESTree created by David Herman while documenting the API exposed by
   spidermonkey. Esprima, created by the jQuery foundation, 1st parser. Acorn
   by Marijn Haverbeke, faster, smaller, more extensible. Esprima, fork of
@@ -468,7 +421,7 @@ layout: default
 
 ## Grades of dead code
 
-- Alive code
+- _Alive_ code
 - Contextually dead code
 - Dead code
 
@@ -486,10 +439,121 @@ layout: full
 [![asciicast](https://asciinema.org/a/431877.svg)](https://asciinema.org/a/431877)
 
 ---
+layout: default
+---
 # Experimental results
-<!-- Results -->
-<!-- Project analysed, results -->
+- Implemented a proof of concept and ran it (https://github.com/threkk/prune.js)
+- Run it against three projects:
+    - small web frontend application: Built ad-hoc. It contains faults. (https://github.com/threkk/dead-code-example/)
+    - **`chalk`**: Node.js library. 16.7 thousands stars on GitHub. 72,066 projects
+    depending on it. 97,897,218 downloads per week. Last major release May 2021.
+    - **`debug`**: Isomorphic library. 9.7 thousands stars on GitHub. 11,752,159 projects
+    depending on it. 113,822,157 downloads per week. Last major release December 2020.
+
+- Expected results, but with false positives.
+<!--
+- The proof of concept uses Espree. It does not cover grade detection.
+- Minimum call graph implementation.
+- swa: detected the introduced faults. Can be fixed.
+- chalk: No errors.
+- debug: false positives. Can be explained.
+- We can make a go through later on.
+-->
 
 ---
+layout: quote
+---
 # Conclusions
-<!-- Conclusions -->
+
+<div class="positive">
+
+- Developed a method that locates potential dead code in ES6 projects.
+
+- Fresh implementation of a call-graph.
+
+</div>
+
+<div class="negative">
+
+- Accuracy of the algorithm depends on the quality of the call-graph. More
+
+- Language challenges are difficult to overcome.
+relations, better results.
+
+
+</div>
+
+## Questions?
+
+<style>
+.positive { ul { list-style: "+  "; } }
+.negative { ul { list-style: "-  "; } }
+</style>
+<!--
+- This method work in more modern versions than academic and reports results
+that industry cannot by using a single method.
+-
+- There is a reason why target only ES5 with a hybrid approach.
+- ES6 includes a lot of new features.
+- Not possible to detect the right version neither properly treat objects.
+- Proof of concept for small real projects "work", but when they grow and add
+more casuistic,
+-->
+
+---
+layout: section
+---
+
+# Fin
+
+---
+layout: section
+---
+
+# Annex
+
+---
+layout: quote
+---
+# History of JavaScript: the chaos
+- **1995:** Created by Brendan Eich as part of the version 2.0 of Netscape.
+- **1996:** Netscape submitted the JavaScript specification to the _European Computer Manufacturers Associations_ (ECMA).
+- **1997:** Release of ECMAScript version 1.
+- **1998:** ECMAScript version 2.
+- **1999:** ECMAScript version 3.
+
+<style>
+ul { padding-top: 2.5em; li { font-size: 1.5em; } }
+strong { background-color: teal; }
+</style>
+
+<!--
+- Brendan Eich will become CEO of Mozilla and Brave
+- Submitted with the intention that other browsers could implement the JavaScript language
+- Only run on Netscape, but Microsoft reverse engineered its own scripting technologies for the browser Internet Explorer, named VBScript and JScript.
+- Originally, Microsoft had no intention of implementing JavaScript on Internet Explorer.
+- This was a big problem for developers trying to support all the browsers.
+- _Best viwed in..._
+-->
+---
+layout: quote
+---
+# History of JavaScript: the drama
+- **2003:** ECMAScript 4 started to be developed, with participants very divided.
+- **2008:** Both sides meet in Oslo and reach an agreement. ECMAScript 4 was never completed, but a subset of it was released as ECMAScript 3.1
+- **2009:** ECMAScript 5 gets released. Common base for JavaScript.
+- **2010:** ECMAScript 5.1 gets released to align with _ISO/IEC 16262_.
+- **2015:** ECMAScript 6. Most improvements ever released.
+
+<style>
+ul { padding-top: 2.5em; li { font-size: 1.5em; } }
+strong { background-color: teal; }
+</style>
+
+<!--
+- There were two sides:  Adobe, Mozilla and Macromedia vs Microsoft, Yahoo and Google.
+- Issues about how ambitious the changes should be and the possible backwards compatibility issues.
+- They agreed on collaborating in the development of ECMAScript 5.
+- ISO specification for JavaScript.
+- Since then, one new version every year:  v7 (2016), v8 (2017)...
+-->
