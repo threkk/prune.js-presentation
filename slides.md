@@ -37,12 +37,11 @@ layout: fact
     codebase. Two main reasons: code that was written expecting to be needed in
     the future but wasn't, and code that was subsituted and not totally
     replaced.
-- Web applications are one of the most common software program. Under the
-    Lehman's classification type E (embeded in the world). They are constantly
-    evolving and change very fast.
-- The frontend logic can be only written in JavaScript. That sort of forces the
-    language to evolve very fast too. It also affects its libraries. For instance,
-    React has had 17 major versions since 2013.
+- Why dead code in JavaScript? Because web applications.
+- Web applications are one of the most common software program. They are constantly
+    evolving and change very fast. The frontend logic can be only written in
+    JavaScript. That sort of forces the language to evolve very fast too. It
+    also affects its libraries. For instance, React has had 17 major versions since 2013.
 - Fast evolution implies dead code.
 - We aim to create a tool that detects this type of code.
 -->
@@ -74,7 +73,8 @@ em { color: teal; }
 - Lacuna: Combination of flow graphs and call graphs.
 - Eslint looks for patterns in the code that tell bad smells.
 - Rollup and webpack: They apply convertions to codebases. One of
-  them is three-shaking: drops files and fragments of code during minification.
+  them is three-shaking: drops files and fragments of code, typically functions,
+  to reduce the bundle size.
 -->
 
 ---
@@ -108,10 +108,10 @@ image: /js-trinity.png
 ---
 # JavaScript as a language
 ## Loosely typed
-- 7 different types: `String`, `Number`,`BigInt`, `Boolean`, `Symbol`,`null` and
+- 7 different primiive types: `String`, `Number`,`BigInt`, `Boolean`, `Symbol`,`null` and
     `undefined`.
 - Everything else which is not in the list is an `Object` or _inherits_ from it.
-- Automatic conversion between types.
+- Variables can change their type and there are automatic conversion between types.
 
 <br />
 
@@ -136,9 +136,9 @@ layout: two-cols
 
 <br />
 
-- The properties of an object are defined dynamically and recursively.
 - Every object has `prototype`, which is another object, or `Object`.
-- Resolution of properties happens recursively.
+- The properties of an object are resolved dynamically and recursively.
+- If it is not found in the object, it will go up in the prototype chain.
 
 <br />
 
@@ -150,7 +150,7 @@ const foo = new Bar()
 
 ```mermaid
 graph LR
-    foo --> F[Foo] --> Func[Function] --> O[ Object ]
+    foo --> F[Bar] --> Func[Function] --> O[ Object ]
 ```
 
 ::right::
@@ -159,7 +159,7 @@ graph LR
 
 <br />
 
-Callbacks, anonymous functions, function expressions, function composition, scope binding...
+Anonymous functions, function expressions, function behaving like clases, scope binding...
 
 <br />
 
@@ -175,7 +175,7 @@ myButton.addEventListener('click', function() {
 </style>
 <!--
 - If at the end of the recursion the property is not resolved, it is created
-    with the value undefied.
+    with the value undefined.
 - Changing the properties of an object during runtime changes the properties of
 all the objects in the chain.
 
@@ -215,7 +215,6 @@ console.log(a); // function a();
 - Very much asynchronous and event oriented language. The execution order is
     altered by the usage of the callbacks, hoisting and events.
 
-- Jake Archibald, developer advoce working on Chrome.
 - Here we can see how properties can change during runtime. Normally, code is
     execute from top to bottom in the global scope, which is similar to a
     function scope. The execution starts and we declare a variable a with the
@@ -226,7 +225,9 @@ console.log(a); // function a();
     again in a variable. However, when we leave the block the value turns again
     into a function. This is because the function definition "survives" the
     block scope. If it wasn't a function, just 'bar', the value in the last line
-    would have been foo.
+    would have been 'bar'.
+
+- Jake Archibald, developer advoce working on Chrome.
 -->
 ---
 layout: section
@@ -252,7 +253,7 @@ ul { list-style: none; }
 - ES5 is the minimum version shared by all the browsers as it was the first
     "common" spec. ES6 has been to the date the biggest version in regards of
     features that has ever been. It includes things like block scopes, modules,
-    import/export and classes. Most of literature cover only ES5.
+    import/export and classes. Most of literature covers only ES5.
 - Dynamic analysis requires also data gathering. This implies running during a
     certain period of time additional code to gather metrics. If the time is not
     big enough, "necessary" paths might be excluded because were never called
@@ -297,13 +298,10 @@ layout: two-cols
 
 <!--
 - Research about the existing tools show that they have but often they
-  have false positives and not able to analyse up-to-date multi-file Node.js
-  modules due to incomplete language features support. Also, to my knowledge,
-  they don't work with ES6.
-
-- WALA: IBM TJ Watson Center. Set of tools for Java mostly and some JavaScript.
-    It is able to create call graphs but only after normalising the code. That
-    makes it useless for us.
+  have false positives and not able to analyse multi-file projects as they only
+  support ES5, or not fully ES6.
+- WALA: IBM TJ Watson Center. It is able to create call graphs but only after
+    normalising the code. That makes it useless for us.
 - ESLint: does not use call graphs but looks for certain patterns.
 - rollup & webpack use internally call graphs but they don't expose it. They
     work with functions and modules which is not enough for us as we aim for
@@ -341,8 +339,10 @@ bar(foo)
 Here we can see an example of a snippet turned into a call graph. The first line
 declares a variable in the bottom left of the graph. This one is read and used
 as parameter in the function call of the line 7 (top node). This function calls
-the function declared in line 3 which prints the value used as a paramter. All
-the nodes are linked hence there is no dead code.
+the function declared in line 3 which prints the value used as a parameter. It
+interacts with the external world so it is considered a terminal node. All
+the nodes are linked and contain a terminal node hence there is no dead code in
+the snippet.
 -->
 ---
 layout: default
@@ -353,10 +353,10 @@ layout: default
 <div class="grid grid-cols-3 grid-gap-10">
 <div class="green">
 
+- Imports and exports of modules
 - Asynchronous code
 - Webassembly
 - Hoisting
-- Imports and exports of modules
 
 </div>
 <div class="yellow">
@@ -382,7 +382,7 @@ li { font-size: 1.5em; line-hegiht: 1.2em; }
 </style>
 <!--
 - Imports and export: Big win, because it is a complex topic due to
-    incompatibilities and not support in general.
+    incompatibilities and not supported in general.
 
 - _There are two which are incompatible by default but they
     can be made compatible with little effort.  We assume that the compatibility
@@ -414,7 +414,7 @@ layout: default
 
 <br />
 
-- Once we have a project call-graph, it uses a breath first search algorithm for each entry point.
+- Once we have a project call-graph, it uses a  search algorithm for each entry point to build a subgraph.
 
 - We have a sub-graph for every entry point of the program.
 - Isolated nodes and subgraphs without at least a terminal node are considered dead.
@@ -469,8 +469,8 @@ layout: default
 
 - Expected results, but with false positives.
 <!--
-- The proof of concept does not cover grade detection.
-- Minimum call graph implementation.
+- The proof of concept does not cover grade detection, just if dead or not.
+- Basic call graph implementation.
 - swa: detected the introduced faults. Can be fixed.
 - chalk: No errors.
 - debug: false positives. Can be explained.
@@ -506,8 +506,9 @@ layout: quote
 .negative { ul { list-style: "-  "; } }
 </style>
 <!--
-- This method works in more modern versions than academic with only static
-    analysis and reports results that industry cannot by using a single method.
+- Compared with academic solutions, this method works in modern multifile versions of
+    JavaScript with only static analysis and, compared with the industry solutions,
+    reports results that industry cannot by using a single method.
 - We also create a fresh call graph implementation as existing ones do not
     support ES6 neither multiple files. This could have been by itself the whole
     thesis.
