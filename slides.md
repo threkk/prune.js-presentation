@@ -33,17 +33,13 @@ layout: fact
 > ## A “bad smell” is a symptom of bad implementation or design that corresponds to a deeper problem in the system.
 
 <!--
-- Very common issue in all langauges.
-- If affect around 30% of the codebase.
-- Two main reasons: YAGNI and software evolution
+- Very common issue in all langauges. It affects around 30% of the codebase. Two
+main reasons: YAGNI and software evolution
 - Web applications are one of the most common software program.
-- They are constantly evolving and change very fast
-- Lehman's classification type E
-    - S - Specification, formally defined
-    - P - Problem, may be formulated but approximated.
-    - E - Embedded in the real world.
-- Frontend can be only written in JavaScript. JavaScript evolves very fast.
-- React has major versions since 2003.
+- Lehman's classification type E (embeded in the world). They are constantly
+  evolving and change very fast
+- Frontend can be only written in JavaScript. JavaScript evolves very fast. Also
+    its libraries. React has major versions since 2013.
 - Fast evolution implies dead code.
 - We aim to create a tool that detects this type of code.
 -->
@@ -74,7 +70,9 @@ em { color: teal; }
 - JavaScript is the language, ECMAScript is the specification of the language
 - JNOSE: combination of metrics and thresholds.
 - Lacuna: Combination of flow graphs and call graphs.
-- Three-shaking: drops files and fragments of code during minification.
+- Eslint looks for patterns in the code that tell bad smells.
+- Rollup and webpack: They apply convertions to codebases. One of
+  them is three-shaking: drops files and fragments of code during minification.
 -->
 
 ---
@@ -92,10 +90,13 @@ h2 { padding: 0.5em; }
 blockquote { padding: 1.5em; }
 </style>
 <!--
-- Like C, Java
-- Dynamic types and everything in general.
-- There have been implementations server side. Netscape introduced an implementation of the language into Netscape Enterprise server (1995) and Microsoft supported JSCript in ASP an .NET (1996). In 2009 Nodejs was released using the JavaScript engine V8 of Google Chrome browser.
-- It is also used in databases (MongoDB, DynamoDB), videogames (UnityScript, ActionScript), operative systems (JavaScript for Autommation, WinJS) and phone programming (React Native, Cordova, KaiOS).
+- Originally designed in Netscape as
+- Like C, Java, dynamic types and everything in general.
+- Created in  1995 but until 2009 wasn't unified. ES6 2015.
+- It is also used in server side (Node.js, Netscape Enterprise Server, deno),
+databases (MongoDB, DynamoDB), videogames (UnityScript, ActionScript),
+operative systems (JavaScript for Autommation, WinJS) and phone programming
+(React Native, Cordova, KaiOS).
 -->
 
 ---
@@ -120,6 +121,10 @@ image: /js-trinity.png
 <!--
 - Everything but object are primitives
 - Function and Array also inherit from object.
+- In the example we can see how type convertion can be a bit confusing
+    sometimes. For instance, in the first case, we can see how both are
+    transformed into string, but in the second there are both to number.
+- Some of them are little intuitive.
 -->
 ---
 layout: two-cols
@@ -128,7 +133,7 @@ layout: two-cols
 
 <br />
 
-- Dynamic definition of the properties of an object.
+- The properties of an object are defined dynamically and recursively.
 - Every object a prototype, which is another object.
 - Resolution of properties happens recursively.
 
@@ -166,10 +171,15 @@ myButton.addEventListener('click', function() {
 .shiki-container { padding-right: 1em; }
 </style>
 <!--
+- Until we reach the original Object type we saw before.
+- If at the end of the recursion the property is not resolved, it is created
+    with the value undefied.
 - Changing the properties of an object during runtime changes the properties of
 all the objects in the chain.
 
-- Very much used in events and asynchronous.
+- Very much used in events and asynchronous code. In the example we can see how
+    we have declared an anonymous function, which normally is an stametement,
+    as an expression part of a function call in an event handler.
 -->
 ---
 layout: default
@@ -200,17 +210,21 @@ console.log(a); // "foo"
 console.log(a); // function a();
 ```
 <!--
-- Very much asynchronous and event oriented language.
-- The execution order is altered by the usage of the callbacks, hoisting and
-    events.
+- Very much asynchronous and event oriented language. The execution order is
+    altered by the usage of the callbacks, hoisting and events.
 
 - Jake Archibald, developer advoce working on Chrome.
-- Properties can change during runtime.
-- Non-existing properties in objects will be created during runtime.
-- Now we have syntactic sugar like promises and async/await to abstract the
-    callback hell.
-- We are not getting into chaging the scope of execution using bind/call
-- The semicolon is optional
+- Here we can see how properties can change during runtime. Normally, code is
+    execute from top to bottom in the global scope, which is similar to a
+    function scope. The execution starts and we declare a variable a with the
+    value foo. In the next line, we can confirm this. Then we get into the
+    block. We see that the value has changed on line 4 because the definition in
+    line 6 is hoisted (this is, moved to the top). This also overwrites the
+    value of the variable and turns it into a function. Later on, we turn it
+    again in a variable. However, when we leave the block the value turns again
+    into a function. This is because the function definition "survives" the
+    block scope. If it wasn't a function, just 'bar', the value in the last line
+    would have been foo.
 -->
 ---
 layout: section
@@ -235,17 +249,20 @@ ul { list-style: none; }
     follows best practices.
 - ES5 is the minimum version shared by all the browsers as it was the first
     "common" spec. ES6 has been to the date the biggest version in regards of
-    features that has ever been. It includes things like block scopes,
+    features that has ever been. It includes things like block scopes, modules,
     import/export and classes. Most of literature cover only ES5.
 - Dynamic analysis requires also data gathering. This implies running during a
     certain period of time additional code to gather metrics. If the time is not
     big enough, "necessary" paths might be excluded because were never called
     (ie. delete an account, compliance features)
-- We will talk about call graphs in future slides.
+- We choose call graphs because it is a proven solution in other languages for
+    dead code detection and for static analysis in general.
+
 -->
 ---
 layout: two-cols
 ---
+
 # Call graph construction
 ## Existing solutions
 
@@ -279,35 +296,27 @@ Hybrid of a call-graph and a flow graph.
 3. Link `read-write`, `call-return`, `arguments-parameters`, `import-export`
 
 <!--
-- _Estree: Esprima/Acorn/Espree_
-- ESTree created by David Herman while documenting the API exposed by
-  spidermonkey. Esprima, created by the jQuery foundation, 1st parser. Acorn
-  by Marijn Haverbeke, faster, smaller, more extensible. Esprima, fork of
-  ESLint because Espree didn't update. Later on, swap the core wiht Acorn.
-
 - Research about the existing tools show that they have but often they
-  have false positives and only two of them are able to analyse up-to-date
-  multi-file Node.js modules due to incomplete language features support. Also, ES5.
+  have false positives and not able to analyse up-to-date multi-file Node.js
+  modules due to incomplete language features support. Also, to my knowledge,
+  they don't work with ES6.
 
-- WALA: IBM TJ Watson Center. Set of tools for Java and JAvaScript. Able to do
-  normalisation to analyse and create intra procedural graphs.
-- ESLint: linter based on Espree, file based able to detect variables and
-  function dead code among other smells based on syntactic analysis (not
-  semantic).
-- rollup & webpack are transpiler. During the three-shaking process of
-  minification they are able to drop unused functions and modules.
-
+- WALA: IBM TJ Watson Center. Set of tools for Java mostly and some JavaScript.
+    It is able to create call graphs but only after normalising the code. That
+    makes it useless for us.
+- ESLint: does not use call graphs but looks for certain patterns.
+- rollup & webpack use internally call graphs but they don't expose it. They
+    work with functions and modules which is not enough for us as we aim for
+    statements.
 - flow graph: flow of information. call graph: flow of function calls.
-- The ECMAScript program is composed of statements, and each
-  statement is a node. A statement node represent a line of code or equivalent
-  in the file. A line of code is series of words that are accepted for the
-  parser and limited by a semicolon or a new line.
+- A statement node represent a line of code or equivalent
+  in the file.
 - This can be a user interaction, writing a file in the file system, making a
-  HTTP request, being exported for consumption, etc.
-- These interactions might have unknown repercussions that we might no be aware
-  by just performing static analysing the code.
-
+  HTTP request, being exported for consumption, etc. These interactions might
+  have unknown repercussions that we might no be aware by just performing
+  static analysing the code.
 -->
+
 ---
 layound: default
 ---
@@ -328,7 +337,13 @@ bar(foo)
 <br />
 
 ![](/callgraph.png)
-
+<!--
+Here we can see an example of a snippet turned into a call graph. The first line
+declares a variable in the bottom left of the graph. This one is read and used
+as parameter in the function call of the line 7 (top node). This function calls
+the function declared in line 3 which prints the value used as a paramter. All
+the nodes are linked hence there is no dead code.
+-->
 ---
 layout: default
 ---
@@ -366,28 +381,27 @@ li { font-size: 1.5em; line-hegiht: 1.2em; }
 .red { color: darkred; }
 </style>
 <!--
-- asynchronous code: Not a problem as it does not affect our approach building
-    call graphs.
-- webassembly: treated as a library
-- hoisting: does not affect us, we only care the read and write, not the value.
-- Imports and export: There are two which are incompatible by default but they
+- Imports and export: Big win, because it is a complex topic due to
+    incompatibilities and not support in general.
+
+- There are two which are incompatible by default but they
     can be made compatible with little effort.  We assume that the compatibility
     issue is solved as it runs. Our approach takes the project as a whole so it
     is able to link the imports and exports between different files.
 
 
 - Entry point of the program: Explicitly declared in the configuration.
-- Function as parameters: We treat the call as a read. If it is anoynmous, we
-    treat it also as a declaration by adding syntetic nodes or attaching it to
-    the parent. Hurts when it is an expression.
 - Determine the version: There is no way of determine which browser/engine runs
-    which version, and which features are implemented. MDN, caniuse.com
+    which version, and which features are implemented. MDN, caniuse.com. This is
+    painful.
 
-
+- The object properties is one of our biggest limitations. It is not only the
+    dinamism but the granularity and the functions as properties.
 - The object properties are dynamic and can be adeded, modified or removed on
-    execution time (the value and the property). They are at expressions level, which our granularity of
-    analysis does not cover. Because of the additional contraints on class
-    properties (use this) we can support them.
+    execution time (the value and the property). They can contain functions too,
+    turning them in sort of a calass. They are at expressions level, which our
+    granularity of analysis does not cover. Because of the additional contraints
+    on class properties (use this) we can support them.
 
 -->
 ---
@@ -400,7 +414,7 @@ layout: default
 
 <br />
 
-- Uses a breath first search algorithm for graphs.
+- Once we have a project call-graph, it uses a breath first search algorithm for each entry point.
 
 - We have a sub-graph for every entry point of the program.
 - Isolated nodes and subgraphs without at least a terminal node are considered dead.
@@ -421,9 +435,9 @@ layout: default
 
 ## Grades of dead code
 
-- _Alive_ code
-- Contextually dead code
 - Dead code
+- Contextually dead code
+- _Alive_ code
 
 </div>
 </div>
@@ -431,6 +445,9 @@ layout: default
 <!--
 - Simple approach used in other languages.
 - Depends heavily on the quality of the call graph.
+- Dependencies: external libraries defined in the package.json.
+- Modules: source files.
+- Statements: lines of code.
 -->
 ---
 layout: full
@@ -476,10 +493,9 @@ layout: quote
 <div class="negative">
 
 - Accuracy of the algorithm depends on the quality of the call-graph. More
+    relations, better results
 
 - Language challenges are difficult to overcome.
-relations, better results.
-
 
 </div>
 
@@ -490,9 +506,12 @@ relations, better results.
 .negative { ul { list-style: "-  "; } }
 </style>
 <!--
-- This method work in more modern versions than academic and reports results
-that industry cannot by using a single method.
--
+- This method work in more modern versions than academic with only staic
+    analysis and reports results that industry cannot by using a single method.
+- We also create a fresh call graph implementation as existing ones do not
+    support ES6 neither multiple files. This could have been by itself the whole
+    thesis.
+
 - There is a reason why target only ES5 with a hybrid approach.
 - ES6 includes a lot of new features.
 - Not possible to detect the right version neither properly treat objects.
