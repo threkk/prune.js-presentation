@@ -33,13 +33,16 @@ layout: fact
 > ## A “bad smell” is a symptom of bad implementation or design that corresponds to a deeper problem in the system.
 
 <!--
-- Very common issue in all langauges. It affects around 30% of the codebase. Two
-main reasons: YAGNI and software evolution
-- Web applications are one of the most common software program.
-- Lehman's classification type E (embeded in the world). They are constantly
-  evolving and change very fast
-- Frontend can be only written in JavaScript. JavaScript evolves very fast. Also
-    its libraries. React has major versions since 2013.
+- Very common issue in all langauges. It affects around 30% of the code in a
+    codebase. Two main reasons: code that was written expecting to be needed in
+    the future but wasn't, and code that was subsituted and not totally
+    replaced.
+- Web applications are one of the most common software program. Under the
+    Lehman's classification type E (embeded in the world). They are constantly
+    evolving and change very fast.
+- The frontend logic can be only written in JavaScript. That sort of forces the
+    language to evolve very fast too. It also affects its libraries. For instance,
+    React has had 17 major versions since 2013.
 - Fast evolution implies dead code.
 - We aim to create a tool that detects this type of code.
 -->
@@ -49,8 +52,8 @@ layout: two-cols
 
 # Academy
 - Not many initiatives in this area.
-- Combination of static and dynamic analysis.
 - Targets ECMAScript 5
+- Combination of static and dynamic analysis.
 - _JSNOSE, Lacuna_
 
 ::right::
@@ -67,7 +70,6 @@ em { color: teal; }
 </style>
 
 <!--
-- JavaScript is the language, ECMAScript is the specification of the language
 - JNOSE: combination of metrics and thresholds.
 - Lacuna: Combination of flow graphs and call graphs.
 - Eslint looks for patterns in the code that tell bad smells.
@@ -92,8 +94,9 @@ blockquote { padding: 1.5em; }
 <!--
 - Originally designed in Netscape as
 - Like C, Java, dynamic types and everything in general.
-- Created in  1995 but until 2009 wasn't unified. ES6 2015.
-- It is also used in server side (Node.js, Netscape Enterprise Server, deno),
+- Created in  1995 but until 2009 wasn't unified. ECMAScript 6 was released in
+    2015.
+- Besides in the browsers, tt is also used in server side (Node.js),
 databases (MongoDB, DynamoDB), videogames (UnityScript, ActionScript),
 operative systems (JavaScript for Autommation, WinJS) and phone programming
 (React Native, Cordova, KaiOS).
@@ -105,9 +108,9 @@ image: /js-trinity.png
 ---
 # JavaScript as a language
 ## Loosely typed
-- 7 different types: `String`, `Number`, `Boolean`, `Symbol`,`null`,
-    `undefined` and `Object`.
-- Everything else which is not in the list _inherits_ from `Object`.
+- 7 different types: `String`, `Number`,`BigInt`, `Boolean`, `Symbol`,`null` and
+    `undefined`.
+- Everything else which is not in the list is an `Object` or _inherits_ from it.
 - Automatic conversion between types.
 
 <br />
@@ -119,8 +122,8 @@ image: /js-trinity.png
 !0+[]+![] // 1
 ```
 <!--
-- Everything but object are primitives
-- Function and Array also inherit from object.
+- Basic inmmutable data types.
+- Object is the data type. Function and Array also inherit from object.
 - In the example we can see how type convertion can be a bit confusing
     sometimes. For instance, in the first case, we can see how both are
     transformed into string, but in the second there are both to number.
@@ -134,7 +137,7 @@ layout: two-cols
 <br />
 
 - The properties of an object are defined dynamically and recursively.
-- Every object a prototype, which is another object.
+- Every object has `prototype`, which is another object, or `Object`.
 - Resolution of properties happens recursively.
 
 <br />
@@ -156,7 +159,7 @@ graph LR
 
 <br />
 
-Heavy usage of callbacks, anonymous functions, function composition, scope binding...
+Callbacks, anonymous functions, function expressions, function composition, scope binding...
 
 <br />
 
@@ -171,15 +174,14 @@ myButton.addEventListener('click', function() {
 .shiki-container { padding-right: 1em; }
 </style>
 <!--
-- Until we reach the original Object type we saw before.
 - If at the end of the recursion the property is not resolved, it is created
     with the value undefied.
 - Changing the properties of an object during runtime changes the properties of
 all the objects in the chain.
 
-- Very much used in events and asynchronous code. In the example we can see how
-    we have declared an anonymous function, which normally is an stametement,
-    as an expression part of a function call in an event handler.
+- In the example we can see how we have declared an anonymous function, which
+    normally is an stametement, as an expression part of a function call in an
+    event handler.
 -->
 ---
 layout: default
@@ -272,13 +274,12 @@ layout: two-cols
 - JSAI
 ### From industry
 - WALA
-- Eslint
+- _Eslint_
 - rollup & webpack
 
 ::right::
 
 ## Our approach
-Hybrid of a call-graph and a flow graph.
 ### Statement node
 > node of the callgraph which matches a ECMAScript statement of the file's AST.
 ### Terminal node
@@ -290,10 +291,9 @@ Hybrid of a call-graph and a flow graph.
 >`call`, `return`, `read`, `write`, `arg`, `param`, `import`,`export`
 
 **For every file:**
-
 1. Extract the AST of the file.
 2. Create a node per AST Statement.
-3. Link `read-write`, `call-return`, `arguments-parameters`, `import-export`
+3. Add edges for the relationships between nodes identifed in the AST.
 
 <!--
 - Research about the existing tools show that they have but often they
@@ -310,11 +310,11 @@ Hybrid of a call-graph and a flow graph.
     statements.
 - flow graph: flow of information. call graph: flow of function calls.
 - A statement node represent a line of code or equivalent
-  in the file.
-- This can be a user interaction, writing a file in the file system, making a
-  HTTP request, being exported for consumption, etc. These interactions might
-  have unknown repercussions that we might no be aware by just performing
-  static analysing the code.
+    in the file.
+- It is a special type of node. This can be a user interaction, writing a file
+    in the file system, making a HTTP request, being exported for consumption,
+    etc. These interactions might have unknown repercussions that we might no
+    be aware by just performing static analysing the code.
 -->
 
 ---
@@ -384,10 +384,10 @@ li { font-size: 1.5em; line-hegiht: 1.2em; }
 - Imports and export: Big win, because it is a complex topic due to
     incompatibilities and not support in general.
 
-- There are two which are incompatible by default but they
+- _There are two which are incompatible by default but they
     can be made compatible with little effort.  We assume that the compatibility
     issue is solved as it runs. Our approach takes the project as a whole so it
-    is able to link the imports and exports between different files.
+    is able to link the imports and exports between different files._
 
 
 - Entry point of the program: Explicitly declared in the configuration.
@@ -397,11 +397,11 @@ li { font-size: 1.5em; line-hegiht: 1.2em; }
 
 - The object properties is one of our biggest limitations. It is not only the
     dinamism but the granularity and the functions as properties.
-- The object properties are dynamic and can be adeded, modified or removed on
+- _The object properties are dynamic and can be adeded, modified or removed on
     execution time (the value and the property). They can contain functions too,
     turning them in sort of a calass. They are at expressions level, which our
     granularity of analysis does not cover. Because of the additional contraints
-    on class properties (use this) we can support them.
+    on class properties (use this) we can support them._
 
 -->
 ---
@@ -469,7 +469,7 @@ layout: default
 
 - Expected results, but with false positives.
 <!--
-- The proof of concept uses Espree. It does not cover grade detection.
+- The proof of concept does not cover grade detection.
 - Minimum call graph implementation.
 - swa: detected the introduced faults. Can be fixed.
 - chalk: No errors.
@@ -484,7 +484,7 @@ layout: quote
 
 <div class="positive">
 
-- Developed a method that locates potential dead code in ES6 projects.
+- Developed a method that locates potential dead code in ECMAScript 6 projects.
 
 - Fresh implementation of a call-graph.
 
@@ -506,7 +506,7 @@ layout: quote
 .negative { ul { list-style: "-  "; } }
 </style>
 <!--
-- This method work in more modern versions than academic with only staic
+- This method works in more modern versions than academic with only static
     analysis and reports results that industry cannot by using a single method.
 - We also create a fresh call graph implementation as existing ones do not
     support ES6 neither multiple files. This could have been by itself the whole
