@@ -94,9 +94,9 @@ blockquote { padding: 1.5em; }
 <!--
 - Originally designed in Netscape as
 - Like C, Java, dynamic types and everything in general.
-- Created in  1995 but until 2009 wasn't unified. ECMAScript 6 was released in
-    2015.
-- Besides in the browsers, tt is also used in server side (Node.js),
+- Created in  1995 but until 2009 wasn't unified under ECMAScript 5. ECMAScript
+    6 was released in 2015.
+- Besides in the browsers, it is also used on the server side (Node.js),
 databases (MongoDB, DynamoDB), videogames (UnityScript, ActionScript),
 operative systems (JavaScript for Autommation, WinJS) and phone programming
 (React Native, Cordova, KaiOS).
@@ -106,9 +106,10 @@ operative systems (JavaScript for Autommation, WinJS) and phone programming
 layout: image-left
 image: /js-trinity.png
 ---
+
 # JavaScript as a language
 ## Loosely typed
-- 7 different primiive types: `String`, `Number`,`BigInt`, `Boolean`, `Symbol`,`null` and
+- 7 different primitive types: `String`, `Number`,`BigInt`, `Boolean`, `Symbol`,`null` and
     `undefined`.
 - Everything else which is not in the list is an `Object` or _inherits_ from it.
 - Variables can change their type and there are automatic conversion between types.
@@ -121,6 +122,7 @@ image: /js-trinity.png
 !0+[] // true
 !0+[]+![] // 1
 ```
+
 <!--
 - Basic inmmutable data types.
 - Object is the data type. Function and Array also inherit from object.
@@ -129,6 +131,7 @@ image: /js-trinity.png
     transformed into string, but in the second there are both to number.
 - Some of them are little intuitive.
 -->
+
 ---
 layout: two-cols
 ---
@@ -198,7 +201,7 @@ layout: default
 
 <br />
 
-```js{all|1,2,11|3-10|6|4,8,9|11}
+```js{all|3-10|6|8,9|11}
 var a = 'foo';
 console.log(a); // "foo"
 {
@@ -212,21 +215,22 @@ console.log(a); // "foo"
 console.log(a); // function a();
 ```
 <!--
-- Very much asynchronous and event oriented language. The execution order is
-    altered by the usage of the callbacks, hoisting and events.
 
 - Here we can see how properties can change during runtime. Normally, code is
     execute from top to bottom in the global scope, which is similar to a
     function scope. The execution starts and we declare a variable a with the
-    value foo. In the next line, we can confirm this. Then we get into the
-    block. We see that the value has changed on line 4 because the definition in
-    line 6 is hoisted (this is, moved to the top). This also overwrites the
-    value of the variable and turns it into a function. Later on, we turn it
-    again in a variable. However, when we leave the block the value turns again
-    into a function. This is because the function definition "survives" the
-    block scope. If it wasn't a function, just 'bar', the value in the last line
-    would have been 'bar'.
+    value foo. Then we get into the block. We see that the value has changed on
+    line 4 because the definition in line 6 is hoisted (this is, essentially
+    moved to the top). This also overwrites the value of the variable and turns
+    it into a function. Later, we continue the executions and it becomes again
+    a string. However, when we leave the block the value turns again into a
+    function. This is because the function definition happens in a function
+    scope (parent scope) instead of this block scope.
 
+- If you are interested, I can explain how hoisting and scope works at the end.
+
+- Very much asynchronous and event oriented language. The execution order is
+    altered by the usage of the callbacks, hoisting and events.
 - Jake Archibald, developer advoce working on Chrome.
 -->
 ---
@@ -248,12 +252,13 @@ ul { list-style: none; }
 </style>
 
 <!--
-- We assume and ES6 program that runs without errors in the target platform and
-    follows best practices.
+- We assume the project is a ECMAScript S6 program that runs without errors in
+    the target platform and follows best practices.
 - ES5 is the minimum version shared by all the browsers as it was the first
-    "common" spec. ES6 has been to the date the biggest version in regards of
-    features that has ever been. It includes things like block scopes, modules,
-    import/export and classes. Most of literature covers only ES5.
+    "common" spec. However, ECMAScript 6 has been to the date the biggest version
+    in regards of features that has ever been. It includes things like block
+    scopes, modules, import/export and classes. Most of literature covers only
+    ES5 but most of modern code is running at least on 6.
 - Dynamic analysis requires also data gathering. This implies running during a
     certain period of time additional code to gather metrics. If the time is not
     big enough, "necessary" paths might be excluded because were never called
@@ -297,10 +302,10 @@ layout: two-cols
 3. Add edges for the relationships between nodes identifed in the AST.
 
 <!--
-- Research about the existing tools show that they have but often they
-  have false positives and not able to analyse multi-file projects as they only
-  support ES5, or not fully ES6.
-- WALA: IBM TJ Watson Center. It is able to create call graphs but only after
+- The research about the existing tools from the academy show that they have but
+  often they have false positives and they are not able to analyse multi-file
+  projects as they only support ES5, or not fully ES6.
+- WALA: From IBM, it is able to create call graphs but only after
     normalising the code. That makes it useless for us.
 - ESLint: does not use call graphs but looks for certain patterns.
 - rollup & webpack use internally call graphs but they don't expose it. They
@@ -382,7 +387,7 @@ li { font-size: 1.5em; line-hegiht: 1.2em; }
 </style>
 <!--
 - Imports and export: Big win, because it is a complex topic due to
-    incompatibilities and not supported in general.
+    incompatibilities of the and not supported in general by previous tools.
 
 - _There are two which are incompatible by default but they
     can be made compatible with little effort.  We assume that the compatibility
@@ -409,14 +414,13 @@ layout: default
 ---
 # Dead code detection
 
-> Having a list with all the nodes of a program and a call graph, dead code are
-> those statements of the list of nodes which are not in the call-graph.
+> ### Having a list with all the nodes of a program and a call graph, dead code are those statements of the list of nodes which are not in the call-graph.
 
 <br />
 
-- Once we have a project call-graph, it uses a  search algorithm for each entry point to build a subgraph.
+- Once we have a project call-graph, for each entry point we traverse the
+    algorithm to build a sub-graph.
 
-- We have a sub-graph for every entry point of the program.
 - Isolated nodes and subgraphs without at least a terminal node are considered dead.
 
 <br />
@@ -443,11 +447,13 @@ layout: default
 </div>
 
 <!--
-- Simple approach used in other languages.
-- Depends heavily on the quality of the call graph.
+- Simple approach used in other languages but it depends heavily on the quality
+of the call graph.
 - Dependencies: external libraries defined in the package.json.
 - Modules: source files.
 - Statements: lines of code.
+- Dead code: Isolated node or does not contain a terminal node.
+- Contextually: It is part of only some relevant sub-graphs.
 -->
 ---
 layout: full
@@ -469,8 +475,8 @@ layout: default
 
 - Expected results, but with false positives.
 <!--
-- The proof of concept does not cover grade detection, just if dead or not.
-- Basic call graph implementation.
+- The proof of concept does not cover grade detection, just if dead or not. It
+    also uses a basic call graph implementation.
 - swa: detected the introduced faults. Can be fixed.
 - chalk: No errors.
 - debug: false positives. Can be explained.
