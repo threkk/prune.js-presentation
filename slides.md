@@ -62,10 +62,10 @@ layout: two-cols
 - Mostly static analysis.
 - _ESLint_: Linter. Syntactic analysis, not semantic.
 - _Rollup, webpack_: Transpilers. Three-shaking
+
 <style>
 ul { padding-top: 2.5em; li { font-size: 1.5em; } }
 em { color: teal; }
-
 </style>
 
 <!--
