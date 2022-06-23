@@ -3,7 +3,7 @@
 > Prune.js is a tool created to detect dead code in JavaScript projects using
 > ECMAScript 6.
 
-This repository contains the slides used during the presentation of the paper,
+This repository contains the [slides](https://threkk.github.io/prune.js-presentation) used during the presentation of the paper,
 including the notes.
 
 ## Getting started
