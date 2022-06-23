@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "slidev --open",
-    "build": "slidev build -o ./docs",
+    "build": "slidev build -o ./docs --base https://threkk.github.io/prune.js-presentation",
     "export": "slidev export"
   },
   "dependencies": {

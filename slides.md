@@ -380,7 +380,7 @@ layout: default
 </div>
 
 <style>
-li { font-size: 1.5em; line-hegiht: 1.2em; }
+li { font-size: 1.5em; line-height: 1.2em; }
 .green { color: darkgreen; }
 .yellow { color: yellow; }
 .red { color: darkred; }
